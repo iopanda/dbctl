@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  cassandra:
+    container_name: cassandra
+    image: bitnami/cassandra
+    ports:
+      - "9042:9042"
