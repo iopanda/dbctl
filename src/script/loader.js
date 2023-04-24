@@ -18,6 +18,7 @@ const loadFileContent = path => {
 }
 
 const loadValueYamlFile = file => {
+    if(!fs.existsSync(file)) return {}
     return yaml.load(fs.readFileSync(file, 'utf-8'))
 }
 
