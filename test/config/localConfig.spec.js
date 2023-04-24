@@ -3,7 +3,7 @@ const fs = require('fs-extra')
 const target = require('../../src/config/localConfig')
 const constants = require('../../src/common/constants')
 
-describe('Test on localConfig.js', () => {
+describe('Test on config/localConfig.js', () => {
     beforeEach(() => fs.removeSync(constants.PATH.CONFIG_DIR))
     afterEach(() => fs.removeSync(constants.PATH.CONFIG_DIR))
 
@@ -31,6 +31,53 @@ describe('Test on localConfig.js', () => {
             target.createConfigFile()
             fs.writeFileSync(constants.PATH.CONFIG_FILE, JSON.stringify(config, null, 4))
             assert.deepEqual(target.getConfigObject(), config)
+        })
+    })
+
+    describe('#writeConfigFile', () => {
+        it('Write object to config file', () => {
+            const config = {default: {dialect: "mysql"}}
+            target.createConfigFile()
+            target.writeConfigFile(config)
+            assert.deepEqual(target.getConfigObject(), config)
+        })
+    })
+
+    describe('#setPropertyValue', () => {
+        it('Set config with property name and value', () => {
+            target.createConfigFile()
+            target.setPropertyValue('context.default.dialect', 'mysql')
+            target.setPropertyValue('context.default.host', 'localhost')
+            target.setPropertyValue('context.default.port', '3306')
+            assert.deepEqual(target.getConfigObject(), {
+                default: {
+                    dialect: "mysql",
+                    host: "localhost",
+                    port: "3306"
+                }
+            })
+        })
+    })
+
+    describe('#getContext', () => {
+        it('Get context correctly', () => {
+            target.createConfigFile()
+            target.setPropertyValue('context.default.dialect', 'mysql')
+            target.setPropertyValue('context.default.host', 'localhost')
+            target.setPropertyValue('context.default.port', '3306')
+            target.setPropertyValue('context.another.dialect', 'postgresql')
+            target.setPropertyValue('context.another.host', 'localhost')
+            target.setPropertyValue('context.another.port', '5432')
+            assert.deepEqual(target.getContext('default'), {
+                dialect: "mysql",
+                host: "localhost",
+                port: "3306"
+            })
+            assert.deepEqual(target.getContext('another'), {
+                dialect: "postgresql",
+                host: "localhost",
+                port: "5432"
+            })
         })
     })
 })

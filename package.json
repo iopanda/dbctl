@@ -5,15 +5,19 @@
   "bin": "bin/dbctl.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive --watch-files ./test/**/*.spec.js --reporter mochawesome --reporter-options reportDir=html",
+    "test": "mocha --recursive --watch-files ./test/*.spec.js --reporter mochawesome --reporter-options reportDir=html",
     "what": "mocha --help"
   },
   "author": "iopanda",
   "license": "ISC",
   "dependencies": {
     "art-template": "^4.13.2",
+    "cassandra-driver": "^4.6.4",
     "commander": "^10.0.1",
-    "fs-extra": "^11.1.1"
+    "fs-extra": "^11.1.1",
+    "js-yaml": "^4.1.0",
+    "klaw-sync": "^6.0.0",
+    "mustache": "^4.2.0"
   },
   "devDependencies": {
     "mocha": "^10.2.0",
