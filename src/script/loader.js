@@ -18,6 +18,11 @@ const loadFileContent = (file, values) => {
 }
 
 const convertScriptToExecutableSqls = text => {
+    // need enhance this function
+    // 1. remove comment by reg
+    // 2. remove blank lines and blank words
+    // 3. replace seprator
+    // 4. build sqls
     return text.replace(/\n\n/, '\n')
         .split('\n')
         .map(it => it.trim())
