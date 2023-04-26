@@ -37,7 +37,9 @@ const getDbInfo = async context_name => {
         result.database.catalogs = converted.catalogs
         result.database.catalogs.map(cat => {
             cat.tables = converted.tables.filter(tab => tab.catalog == cat.name).map(tab => {
-                tab.columns = converted.columns.filter(col => col.catalog == cat.name && col.table == tab.name).map(col => {
+                tab.columns = converted.columns.filter(
+                    col => col.catalog == cat.name && col.table == tab.name
+                ).map(col => {
                     delete col.catalog
                     delete col.table
                     return col
