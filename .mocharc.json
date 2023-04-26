@@ -1,0 +1,9 @@
+{
+    "watch-files": ["./test/*.spec.js"],
+    "reporter": "mochawesome",
+    "recursive": true,
+    "reporter-options": [
+        "reportDir=./reports/ut",
+        "reportFilename=index"
+    ]
+}

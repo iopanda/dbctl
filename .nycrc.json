@@ -1,0 +1,7 @@
+{
+    "check-coverage": true,
+    "extension": [".js"],
+    "include": ["**"],
+    "reporter": ["text", "html"],
+    "report-dir": "./reports/coverage"
+}
