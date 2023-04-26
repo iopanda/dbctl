@@ -10,6 +10,9 @@ describe('Test on config/envConfig.js', () => {
             process.env['DBCTL_USERNAME'] = value
             assert.equal(target.getUsername(), value)
         })
+        after(() => {
+            delete process.env['DBCTL_USERNAME']
+        })
     })
 
     describe('#getPassword', () => {
@@ -17,6 +20,20 @@ describe('Test on config/envConfig.js', () => {
             const value = 'password'
             process.env['DBCTL_PASSWORD'] = value
             assert.equal(target.getPassword(), value)
+        })
+        after(() => {
+            delete process.env['DBCTL_PASSWORD']
+        })
+    })
+
+    describe('#getDatabase', () => {
+        it('Get password from environment variables', () => {
+            const value = 'database'
+            process.env['DBCTL_DATABASE'] = value
+            assert.equal(target.getDatabase(), value)
+        })
+        after(() => {
+            delete process.env['DBCTL_DATABASE']
         })
     })
 })

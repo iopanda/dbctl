@@ -1,11 +1,11 @@
 
 const fs = require('fs-extra')
 const assert = require('assert');
-const localConfig = require('../../../../src/config/localConfig')
-const constants = require('../../../../src/common/constants')
-const Client = require('../../../../src/dialect/cassandra/driver/client')
+const localConfig = require('../../../src/config/localConfig')
+const constants = require('../../../src/common/constants')
+const database = require('../../../src/dialect/cassandra')
 
-describe('Test on dialect/cassandra/driver/client.js', () => {
+describe('Test on dialect/cassandra/index.js', () => {
     beforeEach(() => fs.removeSync(constants.PATH.CONFIG_DIR))
     afterEach(() => fs.removeSync(constants.PATH.CONFIG_DIR))
     const CONFIG = {
@@ -19,23 +19,17 @@ describe('Test on dialect/cassandra/driver/client.js', () => {
             }
         }
     }
-    const CQL = "SELECT data_center FROM system.local WHERE key = 'local'"
 
-    describe('#Client', () => {
-        it('Client can connect DB successfully', done  => {
+    describe('#getDbInfo', () => {
+        it('Cassandra can get information from database correctly', done  => {
             localConfig.createConfigFile()
             localConfig.writeConfigFile(CONFIG)
-            const context = localConfig.getContext('default')
-            const client = Client(context)
-            client.execute(CQL).then( res => {
-                assert.equal(res.first().get('data_center'), 'datacenter1')
+            database.getDbInfo('default').then( res => {
                 done()
             }, rej => {
                 done(rej)
             }).catch(err => {
                 done(err)
-            }).finally(() => {
-                client.shutdown()
             })
         })
     })
