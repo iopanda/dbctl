@@ -5,7 +5,7 @@ const klawSync = require('klaw-sync')
 const Mustache = require('mustache')
 const { Base64 } = require('js-base64')
 
-const loadFileContent = (file, values) => {
+const loadFileContent = (file, values=process.env) => {
     let raw = fs.readFileSync(file).toString()
     if(values != null){
         raw = replaceVariables(raw, values)
@@ -53,6 +53,40 @@ const getSqlFilePathSortedList = dir => {
     .sort(ascSort)
 }
 
+const getYamlFilePathSortedList = dir => {
+    const scanDir = path.resolve(dir)
+    return klawSync(dir, {
+        nodir: false, 
+        depthLimit: -1,
+    }).map(it => path.parse(it.path)).map(it => {
+        it.root = scanDir,
+        it.dir = it.dir.slice(scanDir.length + 1)
+        return it
+    }).filter(
+        it => it.ext == '.yaml' || it.ext == '.yml'
+    ).sort(ascSort)
+}
+
+const getYamlValuesByGivenName = (dir, name) => {
+    const ylist = getYamlFilePathSortedList(dir)
+    // 1. Get Common Values
+    let cv = {}
+    ylist.filter(it => it.dir == '').forEach(it => {
+        const fp = path.join(it.root, it.dir, it.base)
+        cv = loadValueYamlFile(fp)
+    })
+
+    // 2. Get Spec Values
+    let sv = {}
+    ylist.filter(it => it.dir == name).forEach(it => {
+        const fp = path.join(it.root, it.dir, it.base)
+        sv = loadValueYamlFile(fp)
+    })
+
+    // 3. Merge common and spec values
+    return combineObjects(cv, sv, process.env)
+}
+
 const convertDictToArray = dict => {
     const result = []
     for(let k in dict){
@@ -61,7 +95,7 @@ const convertDictToArray = dict => {
     return result
 }
 
-const scriptDirProcess = dir => {
+const scriptDirProcess = (dir, values) => {
     const flist = getSqlFilePathSortedList(dir)
     const completedScriptDict = {}
     const uncompletedMessages = []
@@ -76,7 +110,7 @@ const scriptDirProcess = dir => {
         } else {
             const scriptName = clips[0]
             const scriptMode = clips[1]
-            const content = loadFileContent(path.format(it))
+            const content = loadFileContent(path.format(it), values)
             if(!completedScriptDict[scriptName]){
                 completedScriptDict[scriptName] = {name: scriptName}
             }
@@ -114,5 +148,7 @@ module.exports = {
     combineObjects: combineObjects,
     getSqlFilePathSortedList: getSqlFilePathSortedList,
     convertScriptToExecutableSqls: convertScriptToExecutableSqls,
-    scriptDirProcess: scriptDirProcess
+    scriptDirProcess: scriptDirProcess,
+    getYamlFilePathSortedList: getYamlFilePathSortedList,
+    getYamlValuesByGivenName: getYamlValuesByGivenName
 }

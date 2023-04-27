@@ -51,6 +51,7 @@ const getDbInfo = async contextName => {
             })
             return cat
         })
+        client.shutdown()
         return result
     }catch(err){
         throw err
@@ -59,14 +60,36 @@ const getDbInfo = async contextName => {
     }
 }
 
-const executeSql = async (contextName, rawSql, values = process.env) => {
-    // TODO: not so easy
+const executeSqls = async (contextName, sqls) => {
     const context = localConfig.getContext(contextName)
-    const sql = loader.replaceVariables(rawSql, values)
     const client = Client(context)
-    const rs = await client.execute(sql)
-    client.shutdown()
-    return rs
+    const result = []
+    try{
+        const result = []
+        for(let i in sqls){
+            result.push(await client.execute(sqls[i]))
+        }
+        client.shutdown()
+        return result
+    }catch(err){
+        throw err
+    }finally{
+        client.shutdown()
+    }
+}
+
+const executeSql = async (contextName, sql) => {
+    const context = localConfig.getContext(contextName)
+    const client = Client(context)
+    try{
+        const result = await client.execute(sql)
+        client.shutdown()
+        return result
+    }catch(err){
+        throw err
+    }finally{
+        client.shutdown()
+    }
 }
 
 const executeScript = async (contextName, scriptObj, values = process.env) => {
@@ -75,6 +98,7 @@ const executeScript = async (contextName, scriptObj, values = process.env) => {
 
 module.exports = {
     getDbInfo: getDbInfo,
+    executeSqls: executeSqls,
     executeSql: executeSql,
     executeScript: executeScript
 }

@@ -2,9 +2,8 @@ const { Command } = require('commander')
 const localConfig = require('../src/config/localConfig')
 
 const cmd = new Command()
-.name('install')
-.description('Install dbctl in your managed database')
-.addOption(new Option('-f --force', 'Force Install'))
+.name('uninstall')
+.description('Uninstall dbctl in your managed database')
 .action(async () => {
     const contextName = localConfig.getCurrentContextName()
     if(!contextName){
@@ -19,9 +18,8 @@ const cmd = new Command()
     }
     const database = require('../src/dialect/cassandra')
     const rawScript = require('../src/dialect/cassandra/script')
-    const scripts = await rawScript.getInstallSqls(contextName)
+    const scripts = await rawScript.getUninstallSqls(contextName)
     await database.executeSqls(contextName, scripts.sqls)
-    
 })
 
 module.exports = cmd

@@ -29,7 +29,7 @@ CREATE TABLE {{SYSKS}}.repo (
     eid     TEXT,
     cmt     TEXT,
     rbk     TEXT,
-    cts     TIMESTAMP
+    cts     TIMESTAMP,
     PRIMARY KEY (rid)
 ) {{TABLE_OPTS}};
 
@@ -37,6 +37,6 @@ CREATE TABLE {{SYSKS}}.audit (
     aid     TEXT,
     bfs     TEXT,
     afs     TEXT,
-    cts     TIMESTAMP
+    cts     TIMESTAMP,
     PRIMARY KEY (aid)
 ) {{TABLE_OPTS}};

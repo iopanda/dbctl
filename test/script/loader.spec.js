@@ -70,4 +70,48 @@ describe('Test on script/loader.js', () => {
             assert.notEqual(result, false)
         })
     })
+
+    describe('#getYamlFilePathSortedList', () => {
+        it('Check to get correct yaml files', () => {
+            const result = target.getYamlFilePathSortedList('test/script/assets/completedScripts')
+            assert.equal(result.length, 4)
+        })
+    })
+
+    describe('#getYamlValuesByGivenName', () => {
+        it('Check to get correct object from yaml files: (dev)', () => {
+            const dir = 'test/script/assets/completedScripts'
+            const name = 'dev'
+            const result = target.getYamlValuesByGivenName(dir, name)
+            assert.equal(result['ENV'], name)
+            assert.equal(result['KEYSPACE'], 'keyspace')
+        })
+        it('Check to get correct object from yaml files: (uat)', () => {
+            const dir = 'test/script/assets/completedScripts'
+            const name = 'uat'
+            const result = target.getYamlValuesByGivenName(dir, name)
+            assert.equal(result['ENV'], name)
+            assert.equal(result['KEYSPACE'], 'keyspace')
+        })
+        it('Check to get correct object from yaml files: (do_not_exist)', () => {
+            const dir = 'test/script/assets/completedScripts'
+            const name = 'do_not_exist'
+            const result = target.getYamlValuesByGivenName(dir, name)
+            assert.equal(result['ENV'], null)
+            assert.equal(result['KEYSPACE'], 'keyspace')
+        })
+        it('Check to get correct object from yaml files: (null)', () => {
+            const dir = 'test/script/assets/completedScripts'
+            const name = null
+            const result = target.getYamlValuesByGivenName(dir, name)
+            assert.equal(result['ENV'], null)
+            assert.equal(result['KEYSPACE'], 'keyspace')
+        })
+        it('Check to get correct object from yaml files: (conflict)', () => {
+            const dir = 'test/script/assets/completedScripts'
+            const name = 'conflict'
+            const result = target.getYamlValuesByGivenName(dir, name)
+            assert.equal(result['KEYSPACE'], 'conflict_ks')
+        })
+    })
 })

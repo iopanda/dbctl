@@ -46,5 +46,14 @@ describe('Test on dialect/cassandra/index.js', () => {
         })
     })
 
-
+    describe('#executeSqls', () => {
+        it('Execute sql successfully', async () => {
+            return database.executeSqls('default', [
+                'SELECT key FROM system.local',
+                'SELECT key FROM system.local'
+            ]).then(rs => {
+                assert(rs.length, 2)
+            })
+        })
+    })
 })

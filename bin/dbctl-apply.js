@@ -7,25 +7,19 @@ const loader = require('../src/script/loader')
 const cmd = new Command().name('apply').description('apply change to database')
 
 cmd
-.addOption(new Option('-f --file <file>', 'script file location'))
-.addOption(new Option('-d --dir <dir>', 'script dir'))
+.addOption(new Option('-f --folder <folder>', 'script folder location'))
 .addOption(new Option('-v --value <vname>', 'name of values'))
 .action((options) => {
-    if(options.file && options.dir){
-        console.log(`You cannot use -f and -d by the same time.`)
+    if(!options.folder){
+        console.log(`Please use "-f <file>" to specify the folder of script(s).`)
         process.exit(3)
     }
-    if(!options.file && !options.dir){
-        console.log(`Please use "-f <file>" or "-d <dir>" to specify the script(s).`)
-        process.exit(3)
-    }
-    if(options.file){
+    if(options.folder){
         const fp = path.join(constants.PATH.CWD, options.file)
+        const values = loader.getYamlValuesByGivenName(fp, options.vname)
+        const scripts = loader.scriptDirProcess(fp, values)
         
-    }
-    if(options.dir){
-        const dir = options.dir.startsWith('/') ? options.dir : path.join(constants.PATH.CWD, options.dir)
-        const files = loader.scriptDirProcess(dir)
+
         fs.createFileSync('dist/sqls.json')
         fs.writeFileSync('dist/sqls.json', JSON.stringify(files, null, 4))
         console.log(files)
