@@ -3,9 +3,10 @@ const localConfig = require('../../config/localConfig')
 const envConfig = require('../../config/envConfig')
 const scripts = require('./script')
 const schemas = require('./script/schemas')
+const loader = require('../../script/loader')
 
-const getDbInfo = async context_name => {
-    const context = localConfig.getContext(context_name)
+const getDbInfo = async contextName => {
+    const context = localConfig.getContext(contextName)
     if(!context.credentials) context.credentials = {}
     context.credentials.username = envConfig.getUsername() || context.credentials.username
     context.credentials.password = envConfig.getPassword() || context.credentials.password
@@ -34,6 +35,7 @@ const getDbInfo = async context_name => {
         // 4. Rebuild Structure
         const result = {}
         result.database = converted.local
+        result.database.replication = catalogs.filter(it => it.name = 'system_auth')[0].replication
         result.database.catalogs = converted.catalogs
         result.database.catalogs.map(cat => {
             cat.tables = converted.tables.filter(tab => tab.catalog == cat.name).map(tab => {
@@ -58,8 +60,17 @@ const getDbInfo = async context_name => {
     }
 }
 
+const executeSql = async (contextName, rawSql, values = process.env) => {
+    const context = localConfig.getContext(contextName)
+    const sql = loader.replaceVariables(rawSql, values)
+    const client = Client(context)
+    const rs = await client.execute(sql)
+    client.shutdown()
+    return rs
+}
+
 module.exports = {
     init: (options) => {},
     getDbInfo: getDbInfo,
-    executeSql: (sql) => {}
+    executeSql: executeSql
 }

@@ -41,16 +41,22 @@ describe('Test on dialect/cassandra/script/index.js', () => {
         })
     })
 
-    // describe('#getInstallSqls', () => {
-    //     it('', () => {
-            
-    //     })
-    // })
+    describe('#getInstallSqls', () => {
+        it('Get Install Sqls', async () => {
+            localConfig.createConfigFile()
+            localConfig.writeConfigFile(CONFIG)
+            const sqls = await target.getInstallSqls('default')
+            assert.equal(sqls.length, 6)
+        })
+    })
 
-    // describe('#getUninstallSqls', () => {
-    //     it('', () => {
-            
-    //     })
-    // })
+    describe('#getUninstallSqls', () => {
+        it('Get Uninstall Sqls', async () => {
+            localConfig.createConfigFile()
+            localConfig.writeConfigFile(CONFIG)
+            const sqls = await target.getUninstallSqls('default')
+            assert.equal(sqls.length, 1)
+        })
+    })
 
 })

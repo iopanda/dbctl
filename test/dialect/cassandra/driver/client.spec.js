@@ -16,6 +16,9 @@ describe('Test on dialect/cassandra/driver/client.js', () => {
             credentials: {
                 username: 'cassandra',
                 password: 'cassandra'
+            },
+            protocolOptions: {
+                port: 9042
             }
         }
     }

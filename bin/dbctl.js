@@ -20,5 +20,4 @@ program.addCommand(cmdDiff)
 program.addCommand(cmdExport)
 program.addCommand(cmdGet)
 
-
 program.parse(process.argv)

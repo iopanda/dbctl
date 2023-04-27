@@ -80,4 +80,14 @@ describe('Test on config/localConfig.js', () => {
             })
         })
     })
+
+    describe('#setCurrentContext', () => {
+        it('Set current context', () => {
+            target.createConfigFile()
+            target.setPropertyValue('context.default.dialect', 'mysql')
+            target.setCurrentContext('default')
+            const text = fs.readFileSync(constants.PATH.CURRENT_CTX_POINTER, 'utf-8')
+            assert.equal(text, 'default')
+        })
+    })
 })
