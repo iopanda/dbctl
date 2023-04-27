@@ -6,6 +6,7 @@ const cmdConfig = require('./dbctl-config')
 const cmdDiff = require('./dbctl-diff')
 const cmdExport = require('./dbctl-export')
 const cmdGet = require('./dbctl-get')
+const cmdInstall = require('./dbctl-install')
 
 const program = new Command();
 
@@ -19,5 +20,6 @@ program.addCommand(cmdConfig)
 program.addCommand(cmdDiff)
 program.addCommand(cmdExport)
 program.addCommand(cmdGet)
+program.addCommand(cmdInstall)
 
 program.parse(process.argv)

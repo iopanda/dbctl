@@ -29,7 +29,7 @@ const getInstallSqls = async contextName => {
         REPLICATION: JSON.stringify(rs.get('replication')).replaceAll('"', "'"),
         TABLE_OPTS: ''
     }   
-    return loader.loadFileContent(`${constants.PATH.PROOT}/src/dialect/cassandra/script/install.sql`, values).sqls
+    return loader.loadFileContent(`${constants.PATH.PROOT}/src/dialect/cassandra/script/install.sql`, values)
 }
 
 const getUninstallSqls = async contextName => {
@@ -44,7 +44,7 @@ const getUninstallSqls = async contextName => {
         REPLICATION: JSON.stringify(rs.get('replication')).replaceAll('"', "'"),
         TABLE_OPTS: ''
     }   
-    return loader.loadFileContent(`${constants.PATH.PROOT}/src/dialect/cassandra/script/uninstall.sql`, values).sqls
+    return loader.loadFileContent(`${constants.PATH.PROOT}/src/dialect/cassandra/script/uninstall.sql`, values)
 }
 
 module.exports = {

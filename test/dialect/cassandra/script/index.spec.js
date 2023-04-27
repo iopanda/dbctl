@@ -45,8 +45,8 @@ describe('Test on dialect/cassandra/script/index.js', () => {
         it('Get Install Sqls', async () => {
             localConfig.createConfigFile()
             localConfig.writeConfigFile(CONFIG)
-            const sqls = await target.getInstallSqls('default')
-            assert.equal(sqls.length, 6)
+            const obj = await target.getInstallSqls('default')
+            assert.equal(obj.sqls.length, 6)
         })
     })
 
@@ -54,8 +54,8 @@ describe('Test on dialect/cassandra/script/index.js', () => {
         it('Get Uninstall Sqls', async () => {
             localConfig.createConfigFile()
             localConfig.writeConfigFile(CONFIG)
-            const sqls = await target.getUninstallSqls('default')
-            assert.equal(sqls.length, 1)
+            const obj = await target.getUninstallSqls('default')
+            assert.equal(obj.sqls.length, 1)
         })
     })
 

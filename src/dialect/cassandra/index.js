@@ -51,7 +51,6 @@ const getDbInfo = async contextName => {
             })
             return cat
         })
-
         return result
     }catch(err){
         throw err
@@ -61,6 +60,7 @@ const getDbInfo = async contextName => {
 }
 
 const executeSql = async (contextName, rawSql, values = process.env) => {
+    // TODO: not so easy
     const context = localConfig.getContext(contextName)
     const sql = loader.replaceVariables(rawSql, values)
     const client = Client(context)
@@ -69,8 +69,12 @@ const executeSql = async (contextName, rawSql, values = process.env) => {
     return rs
 }
 
+const executeScript = async (contextName, scriptObj, values = process.env) => {
+    //TODO: Execute SQL and manage the version
+}
+
 module.exports = {
-    init: (options) => {},
     getDbInfo: getDbInfo,
-    executeSql: executeSql
+    executeSql: executeSql,
+    executeScript: executeScript
 }
