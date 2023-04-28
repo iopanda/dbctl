@@ -92,8 +92,12 @@ const executeSql = async (contextName, sql) => {
     }
 }
 
-const executeScript = async (contextName, scriptObj, values = process.env) => {
-    //TODO: Execute SQL and manage the version
+const executeScript = async (contextName, parsedScriptArray, values = process.env) => {
+    
+    for(let i in parsedScriptArray){
+        const current = parsedScriptArray[i]
+        const cql = `UPDATE `
+    }
 }
 
 module.exports = {

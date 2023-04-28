@@ -1,4 +1,4 @@
-CREATE KEYSPACE videodb WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };
+CREATE KEYSPACE {{KS}} WITH REPLICATION = {{REPLICATION}};
 
 use videodb;
 

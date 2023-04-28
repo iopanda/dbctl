@@ -1,11 +1,11 @@
-const { Command } = require('commander')
+const { Command, Option } = require('commander')
 const localConfig = require('../src/config/localConfig')
 
 const cmd = new Command()
 .name('install')
 .description('Install dbctl in your managed database')
 .addOption(new Option('-f --force', 'Force Install'))
-.action(async () => {
+.action(async opts => {
     const contextName = localConfig.getCurrentContextName()
     if(!contextName){
         console.error(`You didn't select any context, please use "dbctl config use-context <name>" to select a context.`)
@@ -19,9 +19,14 @@ const cmd = new Command()
     }
     const database = require('../src/dialect/cassandra')
     const rawScript = require('../src/dialect/cassandra/script')
-    const scripts = await rawScript.getInstallSqls(contextName)
-    await database.executeSqls(contextName, scripts.sqls)
-    
+
+    if(opts.force){
+        const uninstallScript = await rawScript.getUninstallSqls(contextName)
+        await database.executeSqls(contextName, uninstallScript.sqls)
+    }
+
+    const installScript = await rawScript.getInstallSqls(contextName)
+    await database.executeSqls(contextName, installScript.sqls)
 })
 
 module.exports = cmd

@@ -3,6 +3,8 @@ const me = require('../../package.json')
 const path = require('path')
 
 const HOME = process.env.HOME || process.env.USERPROFILE
+process.env['DBCTL_VERSION'] = me.version
+
 module.exports = {
     VERSION: me.version,
     SYSDB_NAME: "dbctl",

@@ -27,7 +27,8 @@ const getInstallSqls = async contextName => {
     const values = {
         SYSKS: constants.SYSDB_NAME,
         REPLICATION: JSON.stringify(rs.get('replication')).replaceAll('"', "'"),
-        TABLE_OPTS: ''
+        TABLE_OPTS: '',
+        VERSION: constants.VERSION
     }   
     return loader.loadFileContent(`${constants.PATH.PROOT}/src/dialect/cassandra/script/install.sql`, values)
 }
@@ -42,7 +43,8 @@ const getUninstallSqls = async contextName => {
     const values = {
         SYSKS: constants.SYSDB_NAME,
         REPLICATION: JSON.stringify(rs.get('replication')).replaceAll('"', "'"),
-        TABLE_OPTS: ''
+        TABLE_OPTS: '',
+        VERSION: constants.VERSION
     }   
     return loader.loadFileContent(`${constants.PATH.PROOT}/src/dialect/cassandra/script/uninstall.sql`, values)
 }

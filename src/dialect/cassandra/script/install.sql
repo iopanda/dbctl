@@ -3,6 +3,7 @@ CREATE KEYSPACE IF NOT EXISTS {{SYSKS}} WITH REPLICATION = {{{REPLICATION}}};
 CREATE TABLE {{SYSKS}}.version (
     id      int,
     ver     TEXT,
+    lsn     TEXT,
     cts     TIMESTAMP,
     uts     TIMESTAMP,
     PRIMARY KEY (id)
@@ -40,3 +41,9 @@ CREATE TABLE {{SYSKS}}.audit (
     cts     TIMESTAMP,
     PRIMARY KEY (aid)
 ) {{TABLE_OPTS}};
+
+INSERT INTO {{SYSKS}}.version(id,cts,uts,ver,lsn)
+VALUES (0, currentTimestamp(), currentTimestamp(), '{{VERSION}}', '_');
+
+INSERT INTO {{SYSKS}}.event(eid,cts,info,typ)
+VALUES ('00000000-0000-0000-0000-000000000000', currentTimestamp(), 'dbctl install', 'install');

@@ -17,7 +17,8 @@
     "js-base64": "^3.7.5",
     "js-yaml": "^4.1.0",
     "klaw-sync": "^6.0.0",
-    "mustache": "^4.2.0"
+    "mustache": "^4.2.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "assert": "^2.0.0",
@@ -28,7 +29,9 @@
   "pkg": {
     "scripts": "./**/*.js",
     "assets": "src/**/*",
-    "targets": ["node18-macos-arm64"],
+    "targets": [
+      "node18-macos-arm64"
+    ],
     "outputPath": "dist"
   }
 }

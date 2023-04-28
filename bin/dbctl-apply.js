@@ -3,6 +3,8 @@ const fs = require('fs-extra')
 const path = require('path')
 const constants = require('../src/common/constants')
 const loader = require('../src/script/loader')
+const localConfig = require('../src/config/localConfig')
+
 
 const cmd = new Command().name('apply').description('apply change to database')
 
@@ -14,16 +16,24 @@ cmd
         console.log(`Please use "-f <file>" to specify the folder of script(s).`)
         process.exit(3)
     }
-    if(options.folder){
-        const fp = path.join(constants.PATH.CWD, options.file)
-        const values = loader.getYamlValuesByGivenName(fp, options.vname)
-        const scripts = loader.scriptDirProcess(fp, values)
-        
-
-        fs.createFileSync('dist/sqls.json')
-        fs.writeFileSync('dist/sqls.json', JSON.stringify(files, null, 4))
-        console.log(files)
+    const contextName = localConfig.getCurrentContextName()
+    if(!contextName){
+        console.error(`You didn't select any context, please use "dbctl config use-context <name>" to select a context.`)
+        process.exit(3)
     }
+    const context = localConfig.getContext(contextName)
+    const dialect = context.dialect
+    if(!dialect){
+        console.error(`The dialect of your database is missing in context "${contextName}", please use "dbctl config set context.${contextName}.dialect <cassandra|mysql> to setup."`)
+        process.exit(3)
+    }
+    
+    const fp = path.join(constants.PATH.CWD, options.folder)
+    const values = loader.getYamlValuesByGivenName(fp, options.vname)
+    const scripts = loader.scriptDirProcess(fp, values)
+    
+    const database = require('../src/dialect/cassandra')
+    database.executeScript(contextName, scripts, values)
 })
 
 module.exports = cmd
