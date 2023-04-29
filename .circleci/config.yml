@@ -30,8 +30,8 @@ jobs:
           name: install-package
           command: npm install
       - run:
-          name: install-pkg
-          command: npm install pkg -g
+          name: install-for-build
+          command: npm install --client
       - run:
           name: Run tests
           command: npm test
