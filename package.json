@@ -5,7 +5,8 @@
   "bin": "bin/dbctl.js",
   "main": "index.js",
   "scripts": {
-    "test": "nyc mocha"
+    "test": "nyc mocha",
+    "package": "pkg ."
   },
   "author": "iopanda",
   "license": "ISC",
@@ -28,12 +29,17 @@
   },
   "pkg": {
     "scripts": "**/*.js",
-    "assets": ["src/**/*.sql"],
+    "assets": [
+      "src/**/*.sql"
+    ],
     "targets": [
       "node16-macos-x64",
       "node16-linux-x64",
       "node16-macos-arm64"
     ],
     "outputPath": "dist"
+  },
+  "buildDependencies": {
+    "pkg": "^5.8.1"
   }
 }
