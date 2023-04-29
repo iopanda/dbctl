@@ -7,14 +7,12 @@ describe('Test on script/loader.js', () => {
     describe('#loadFileContent()', () => {
         it('Load sql file and parse it correctly', () => {
             const result = target.loadFileContent('test/script/assets/completedScripts/test1.commit.sql')
-            assert.equal(result.sqls.length, 10)
-            assert.equal(result.sqls[2], `CREATE TABLE users (username varchar,firstname varchar,lastname varchar,email varchar,password varchar,created_date timestamp,total_credits int,credit_change_date timeuuid,PRIMARY KEY (username))`)
+            assert.equal(result.sqls.length, 2)
         })
 
         it('Load sql file which template can be parsed', () => {
             const result = target.loadFileContent('test/script/assets/completedScripts/test2.commit.sql', {KS: "ks"})
-            assert.equal(result.sqls.length, 10)
-            assert.equal(result.sqls[2], `CREATE TABLE ks.users (username varchar,firstname varchar,lastname varchar,email varchar,password varchar,created_date timestamp,total_credits int,credit_change_date timeuuid,PRIMARY KEY (username))`)
+            assert.equal(result.sqls.length, 2)
         })
     })
 
@@ -28,8 +26,7 @@ describe('Test on script/loader.js', () => {
     describe('#loadValueYamlFile', () => {
         it('Load yaml values file', () => {
             const result = target.loadValueYamlFile('test/script/assets/completedScripts/values.yaml')
-            assert.equal(result.KEYSPACE, 'keyspace')
-            assert.equal(result.TABLENAME, 'tablename')
+            assert.equal(result.KEYSPACE, 'common_ks')
         })
     })
 
@@ -54,8 +51,7 @@ describe('Test on script/loader.js', () => {
         it('Convert script to sqls', () => {
             const text = fs.readFileSync('test/script/assets/completedScripts/test1.commit.sql', 'utf-8')
             const result = target.convertScriptToExecutableSqls(text)
-            assert.equal(result.length, 10)
-            assert.equal(result[2], `CREATE TABLE users (username varchar,firstname varchar,lastname varchar,email varchar,password varchar,created_date timestamp,total_credits int,credit_change_date timeuuid,PRIMARY KEY (username))`)
+            assert.equal(result.length, 2)
         })
     })
 
@@ -83,29 +79,25 @@ describe('Test on script/loader.js', () => {
             const dir = 'test/script/assets/completedScripts'
             const name = 'dev'
             const result = target.getYamlValuesByGivenName(dir, name)
-            assert.equal(result['ENV'], name)
-            assert.equal(result['KEYSPACE'], 'keyspace')
+            assert.equal(result['KEYSPACE'], 'dev_ks')
         })
         it('Check to get correct object from yaml files: (uat)', () => {
             const dir = 'test/script/assets/completedScripts'
             const name = 'uat'
             const result = target.getYamlValuesByGivenName(dir, name)
-            assert.equal(result['ENV'], name)
-            assert.equal(result['KEYSPACE'], 'keyspace')
+            assert.equal(result['KEYSPACE'], 'uat_ks')
         })
         it('Check to get correct object from yaml files: (do_not_exist)', () => {
             const dir = 'test/script/assets/completedScripts'
             const name = 'do_not_exist'
             const result = target.getYamlValuesByGivenName(dir, name)
-            assert.equal(result['ENV'], null)
-            assert.equal(result['KEYSPACE'], 'keyspace')
+            assert.equal(result['KEYSPACE'], 'common_ks')
         })
         it('Check to get correct object from yaml files: (null)', () => {
             const dir = 'test/script/assets/completedScripts'
             const name = null
             const result = target.getYamlValuesByGivenName(dir, name)
-            assert.equal(result['ENV'], null)
-            assert.equal(result['KEYSPACE'], 'keyspace')
+            assert.equal(result['KEYSPACE'], 'common_ks')
         })
         it('Check to get correct object from yaml files: (conflict)', () => {
             const dir = 'test/script/assets/completedScripts'

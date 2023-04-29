@@ -27,10 +27,12 @@
     "nyc": "^15.1.0"
   },
   "pkg": {
-    "scripts": "./**/*.js",
-    "assets": "src/**/*",
+    "scripts": "**/*.js",
+    "assets": ["src/**/*.sql"],
     "targets": [
-      "node18-macos-arm64"
+      "node16-macos-x64",
+      "node16-linux-x64",
+      "node16-macos-arm64"
     ],
     "outputPath": "dist"
   }

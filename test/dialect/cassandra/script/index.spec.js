@@ -46,7 +46,7 @@ describe('Test on dialect/cassandra/script/index.js', () => {
             localConfig.createConfigFile()
             localConfig.writeConfigFile(CONFIG)
             const obj = await target.getInstallSqls('default')
-            assert.equal(obj.sqls.length, 6)
+            assert.equal(obj.sqls.length, 8)
         })
     })
 

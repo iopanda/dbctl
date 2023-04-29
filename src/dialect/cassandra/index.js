@@ -4,6 +4,10 @@ const envConfig = require('../../config/envConfig')
 const scripts = require('./script')
 const schemas = require('./script/schemas')
 const loader = require('../../script/loader')
+const uuid = require('uuid').v4
+const { Base64 } = require('js-base64')
+const {Audit, Event, Meta, Repo, Version} = require('./operations')
+
 
 const getDbInfo = async contextName => {
     const context = localConfig.getContext(contextName)
@@ -78,6 +82,14 @@ const executeSqls = async (contextName, sqls) => {
     }
 }
 
+const executeSqlsWithClient = async (client, sqls) => {
+    const result = []
+    for(let i in sqls){
+        result.push(await client.execute(sqls[i]))
+    }
+    return result
+}
+
 const executeSql = async (contextName, sql) => {
     const context = localConfig.getContext(contextName)
     const client = Client(context)
@@ -93,16 +105,42 @@ const executeSql = async (contextName, sql) => {
 }
 
 const executeScript = async (contextName, parsedScriptArray, values = process.env) => {
+    const context = localConfig.getContext(contextName)
+    const client = Client(context)
+    const eventId = uuid()
     
+    const before = await getDbInfo(contextName)
+    await Event.addEvnet(client, {
+        id: eventId,
+        type: 'commit',
+        info: JSON.stringify(parsedScriptArray.map(it => it.name))
+    })
+
     for(let i in parsedScriptArray){
-        const current = parsedScriptArray[i]
-        const cql = `UPDATE `
+        const currentScript = parsedScriptArray[i]
+        await Repo.addRepo(client, {
+            id: currentScript.name,
+            eventId: eventId,
+            commitContent: currentScript.commit.raw,
+            rollbackContent: currentScript.rollback.raw
+        })
+        await executeSqlsWithClient(client, currentScript.commit.sqls)
     }
+
+    const after = await getDbInfo(contextName)
+    await Audit.addAudit(client, {
+        id: eventId,
+        before: Base64.encode(JSON.stringify(before)),
+        after: Base64.encode(JSON.stringify(after))
+    })
+    await Version.updateLastScriptName(client, parsedScriptArray[parsedScriptArray.length-1].name)
+    client.shutdown()
 }
 
 module.exports = {
     getDbInfo: getDbInfo,
     executeSqls: executeSqls,
     executeSql: executeSql,
-    executeScript: executeScript
+    executeScript: executeScript,
+    executeSqlsWithClient: executeSqlsWithClient
 }

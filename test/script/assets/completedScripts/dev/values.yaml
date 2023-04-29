@@ -1,1 +1,3 @@
-REPLICATION: "{ 'class' : 'SimpleStrategy', 'replication_factor' : 1 }"
+KEYSPACE: dev_ks
+REPLICATION: "{'class':'org.apache.cassandra.locator.SimpleStrategy', 'replication_factor': 1}"
+PREFIX: dev

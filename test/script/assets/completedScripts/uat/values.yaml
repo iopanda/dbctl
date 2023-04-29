@@ -1,1 +1,3 @@
-ENV: uat
+KEYSPACE: uat_ks
+REPLICATION: "{'class':'org.apache.cassandra.locator.SimpleStrategy', 'replication_factor': 1}"
+PREFIX: uat
