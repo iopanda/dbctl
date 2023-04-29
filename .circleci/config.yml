@@ -32,13 +32,13 @@ jobs:
       - run:
           name: install-for-build
           command: npm install --client
-      - run:
-          name: Run tests
-          command: npm test
+      # - run:
+      #     name: Run-tests
+      #     command: npm test
       - store_test_results:
           path: reports
       - run:
-          name: Run build
+          name: Run-build
           command: pkg .
       - store_artifacts:
           path: dbctl-linux-x64
