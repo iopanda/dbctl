@@ -33,12 +33,13 @@ CREATE TABLE {{SYSKS}}.event (
 ) {{TABLE_OPTS}};
 
 CREATE TABLE {{SYSKS}}.repo (
-    repo_id     TEXT,
+    namespace   TEXT,
+    repo_name     TEXT,
     event_id     TEXT,
     commit_script_base64     TEXT,
     rollback_script_base64     TEXT,
     created_at     TIMESTAMP,
-    PRIMARY KEY (repo_id)
+    PRIMARY KEY (namespace, repo_name)
 ) {{TABLE_OPTS}};
 
 CREATE TABLE {{SYSKS}}.history (

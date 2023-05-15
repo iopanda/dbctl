@@ -119,6 +119,7 @@ const executeScript = async (contextName, parsedScriptArray, values = process.en
     for(let i in parsedScriptArray){
         const currentScript = parsedScriptArray[i]
         await Repo.addRepo(client, {
+            namespace: "",
             id: currentScript.name,
             eventId: eventId,
             commitContent: currentScript.commit.raw,
