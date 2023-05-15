@@ -60,6 +60,8 @@ workflows:
           title: The initial release
           requires:
             - build-and-test
+          files:
+            - dist/dbctl-linux-x64
           context:
             - GITHUB_CREDS
           filters:
