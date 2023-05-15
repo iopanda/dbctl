@@ -7,6 +7,7 @@ orbs:
   # Orbs reduce the amount of configuration required for common tasks.
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
   node: circleci/node@4.7
+  gh: circleci/github-cli@1.0
 
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
@@ -43,11 +44,7 @@ jobs:
       - run:
           name: Run-build
           command: /home/circleci/.local/bin/pkg .
-      - run:
-          name: "Publish Release on GitHub"
-          command: |
-            VERSION=$(dist/dbctl-linux-x64 --version)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./dist/
+
 
 workflows:
   # Below is the definition of your workflow.
@@ -57,5 +54,15 @@ workflows:
   sample:
     jobs:
       - build-and-test
-      # For running simple node tests, you could optionally use the node/test job from the orb to replicate and replace the job above in fewer lines.
-      # - node/test
+      - gh/release:
+          notes-file: changelog.md
+          tag: 1.0.0
+          title: The initial release
+          requires:
+            - build-and-test
+          context:
+            - GITHUB_CREDS
+          filters:
+            branches:
+              only:
+                - main
