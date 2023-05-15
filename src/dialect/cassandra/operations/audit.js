@@ -1,18 +1,18 @@
 const constants = require('../../../common/constants')
 
 const addAudit = async (client, audit) => {
-    const cql = `INSERT INTO ${constants.SYSDB_NAME}.audit (aid,bfs,afs,cts) VALUES ('${audit.id}','${audit.before}', '${audit.after}', currentTimestamp())`
+    const cql = `INSERT INTO ${constants.SYSDB_NAME}.history (id,before,after,created_at) VALUES ('${audit.id}','${audit.before}', '${audit.after}', currentTimestamp())`
     await client.execute(cql)
 }
 
 const getAudit = async (client, id) => {
-    const cql = `SELECT aid,bfs,afs,cts FROM ${constants.SYSDB_NAME}.audit WHERE aid = '${id}'`
+    const cql = `SELECT id,before,after,created_at FROM ${constants.SYSDB_NAME}.audit WHERE id = '${id}'`
     const rs = (await client.execute(cql)).first()
     return {
-        id: rs['aid'],
-        before: rs['bfs'],
-        after: rs['afs'],
-        createdAt: rs['cts']
+        id: rs['id'],
+        before: rs['before'],
+        after: rs['after'],
+        createdAt: rs['created_at']
     }
 }
 

@@ -58,3 +58,13 @@ CREATE TABLE {{SYSKS}}.audit (
     cts     TIMESTAMP
     PRIMARY KEY (aid)
 ) {{TABLE_OPTS}};
+
+## Next Version: Seperate of Duty
+
+dbctl apply: use to apply scripts from yaml file
+dbctl template: use to generate yaml file from structured workspace
+
+usage:
+```sh
+dbctl template | dbctl apply -f
+```

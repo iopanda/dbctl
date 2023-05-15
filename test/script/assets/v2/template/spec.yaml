@@ -1,0 +1,18 @@
+version: 1.0.0
+metadata:
+  
+namespace: local-dev
+spec:
+  dialect: cassandra
+  version: 20230521
+  scripts:
+    - name: 20230520
+      type: commit
+      content: "<base64 text>"
+    - name: 20230520
+      type: rollback
+      content: "<base64 text>"
+    - name: 20230521
+      type: commit
+      content: "<base64 text>"
+  
