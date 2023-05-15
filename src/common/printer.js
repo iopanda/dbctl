@@ -5,6 +5,7 @@ module.exports = {
         console.log(JSON.stringify(obj, null, 4))
     },
     yaml: obj => {
-        console.log(yaml.dump(obj))
+        const json = JSON.parse(JSON.stringify(obj))
+        console.log(yaml.dump(json))
     }
 }

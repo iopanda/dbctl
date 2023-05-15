@@ -6,7 +6,7 @@ const schemas = require('./script/schemas')
 const loader = require('../../script/loader')
 const uuid = require('uuid').v4
 const { Base64 } = require('js-base64')
-const {Audit, Event, Meta, Repo, Version} = require('./operations')
+const {Audit, Event, Meta, Repo, Version, Namespace} = require('./operations')
 
 
 const getDbInfo = async contextName => {
@@ -27,13 +27,13 @@ const getDbInfo = async contextName => {
         const catalogs = (await client.execute(scripts.getInfoSqls(version).catalogs)).rows
         const tables = (await client.execute(scripts.getInfoSqls(version).tables)).rows
         const columns = (await client.execute(scripts.getInfoSqls(version).columns)).rows
-
+        const EXCLUDED_KS = ['system', 'system_auth', 'system_distributed', 'system_schema', 'system_traces', 'system_views', 'system_virtual_schema', 'dbctl']
         // 3. Convert to a better structure for rebuild
         const converted = {
             local: local.map(schemas[version].local.handler)[0],
-            catalogs: catalogs.map(schemas[version].catalog.handler),
-            tables: tables.map(schemas[version].tables.handler),
-            columns: columns.map(schemas[version].columns.handler)
+            catalogs: catalogs.map(schemas[version].catalog.handler).filter(it => EXCLUDED_KS.indexOf(it.name) == -1),
+            tables: tables.map(schemas[version].tables.handler).filter(it => EXCLUDED_KS.indexOf(it.name) == -1),
+            columns: columns.map(schemas[version].columns.handler).filter(it => EXCLUDED_KS.indexOf(it.name) == -1)
         }
 
         // 4. Rebuild Structure
@@ -104,38 +104,47 @@ const executeSql = async (contextName, sql) => {
     }
 }
 
-const executeScript = async (contextName, parsedScriptArray, values = process.env) => {
+const executeScript = async (contextName, parsedScriptArray, namespace = "default") => {
     const context = localConfig.getContext(contextName)
     const client = Client(context)
     const eventId = uuid()
-    
+
+    const currentVersion = await Namespace.getVersionByNamespace(client, namespace) || "_"
+    const filteredScriptArray = parsedScriptArray.filter(it => it.name > currentVersion)
+
+    // execution start
     const before = await getDbInfo(contextName)
     await Event.addEvnet(client, {
         id: eventId,
         type: 'commit',
-        info: JSON.stringify(parsedScriptArray.map(it => it.name))
+        info: JSON.stringify(filteredScriptArray.map(it => it.name))
     })
 
-    for(let i in parsedScriptArray){
-        const currentScript = parsedScriptArray[i]
-        await Repo.addRepo(client, {
-            namespace: "",
-            id: currentScript.name,
-            eventId: eventId,
-            commitContent: currentScript.commit.raw,
-            rollbackContent: currentScript.rollback.raw
+    try{
+        for(let i in filteredScriptArray){
+            const currentScript = filteredScriptArray[i]
+            await Repo.addRepo(client, {
+                namespace: namespace,
+                id: currentScript.name,
+                eventId: eventId,
+                commitContent: currentScript.commit.raw,
+                rollbackContent: currentScript.rollback.raw
+            })
+            await executeSqlsWithClient(client, currentScript.commit.sqls)
+            await Namespace.updateVersionByNamespace(client, namespace, currentScript.name)
+        }
+        const after = await getDbInfo(contextName)
+        await Audit.addAudit(client, {
+            id: eventId,
+            before: Base64.encode(JSON.stringify(before)),
+            after: Base64.encode(JSON.stringify(after))
         })
-        await executeSqlsWithClient(client, currentScript.commit.sqls)
+        // execution end
+    }catch(err){
+        console.error(`Failed. ${err.message}`)
+    }finally{
+        client.shutdown()
     }
-
-    const after = await getDbInfo(contextName)
-    await Audit.addAudit(client, {
-        id: eventId,
-        before: Base64.encode(JSON.stringify(before)),
-        after: Base64.encode(JSON.stringify(after))
-    })
-    await Version.updateLastScriptName(client, parsedScriptArray[parsedScriptArray.length-1].name)
-    client.shutdown()
 }
 
 module.exports = {

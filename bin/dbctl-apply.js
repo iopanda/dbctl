@@ -11,6 +11,7 @@ const cmd = new Command().name('apply').description('apply change to database')
 cmd
 .addOption(new Option('-f --folder <folder>', 'script folder location'))
 .addOption(new Option('-v --value <value>', 'name of values'))
+.addOption(new Option('-n --namespace <namespace>', 'namesapce'))
 .action((options) => {
     if(!options.folder){
         console.log(`Please use "-f <file>" to specify the folder of script(s).`)
@@ -32,8 +33,8 @@ cmd
     const values = loader.getYamlValuesByGivenName(fp, options.value)
     const scripts = loader.scriptDirProcess(fp, values)
     
-    const database = require('../src/dialect/cassandra')
-    database.executeScript(contextName, scripts, values)
+    const database = require('../src/dialect')
+    database[dialect].executeScript(contextName, scripts, options.namespace)
 })
 
 module.exports = cmd

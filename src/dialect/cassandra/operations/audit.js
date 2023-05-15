@@ -6,7 +6,7 @@ const addAudit = async (client, audit) => {
 }
 
 const getAudit = async (client, id) => {
-    const cql = `SELECT id,before,after,created_at FROM ${constants.SYSDB_NAME}.audit WHERE id = '${id}'`
+    const cql = `SELECT id,before,after,created_at FROM ${constants.SYSDB_NAME}.history WHERE id = '${id}'`
     const rs = (await client.execute(cql)).first()
     return {
         id: rs['id'],

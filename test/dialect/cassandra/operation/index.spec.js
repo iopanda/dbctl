@@ -86,13 +86,14 @@ describe('Test on dialect/cassandra/operations/index.js', () => {
     describe('Test on repo.js', () => {
         it('Repo can be insert and queried', async () => {
             const obj = {
+                namespace: 'namespace',
                 id: 'r01',
                 eventId: 'e01',
                 commitContent: 'this is commitContent',
                 rollbackContent: 'this is rollbackContent'
             }
             await Repo.addRepo(PREDEFINED.client, obj)
-            const rs = await Repo.getRepo(PREDEFINED.client, obj.id)
+            const rs = await Repo.getRepo(PREDEFINED.client, obj.namespace, obj.id)
             assert.equal(rs.eventId, obj.eventId)
             assert.equal(rs.commitContent, obj.commitContent)
             assert.equal(rs.rollbackContent, obj.rollbackContent)

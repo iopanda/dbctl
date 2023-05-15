@@ -3,5 +3,6 @@ module.exports = {
     Event: require('./event'),
     Meta: require('./meta'),
     Repo: require('./repo'),
-    Version: require('./version')
+    Version: require('./version'),
+    Namespace: require('./namespace')
 }

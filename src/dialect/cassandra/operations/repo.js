@@ -2,7 +2,7 @@ const constants = require('../../../common/constants')
 
 const addRepo = async (client, repo) => {
     const cql = `INSERT INTO ${constants.SYSDB_NAME}.repo (namespace, repo_name,event_id,commit_script_base64,rollback_script_base64,created_at) 
-    VALUES ('${repo.id}', '${repo.eventId}', '${repo.commitContent}', '${repo.rollbackContent}', currentTimestamp())`
+    VALUES ('${repo.namespace}','${repo.id}', '${repo.eventId}', '${repo.commitContent}', '${repo.rollbackContent}', currentTimestamp())`
     await client.execute(cql)
 }
 
