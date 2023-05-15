@@ -30,6 +30,9 @@ jobs:
           name: install-package
           command: npm install
       - run:
+          name: install-global-package
+          command: npm install --prefix=$HOME/.local --global pkg
+      - run:
           name: install-for-build
           command: npm install --client
       # - run:
@@ -39,7 +42,7 @@ jobs:
           path: reports
       - run:
           name: Run-build
-          command: pkg .
+          command: /home/circleci/.local/bin/pkg .
       - store_artifacts:
           path: dist/dbctl-linux-x64
 
