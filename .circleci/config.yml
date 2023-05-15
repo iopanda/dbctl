@@ -43,8 +43,11 @@ jobs:
       - run:
           name: Run-build
           command: /home/circleci/.local/bin/pkg .
-      - store_artifacts:
-          path: dist/dbctl-linux-x64
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            VERSION=$(dist/dbctl-linux-x64 --version)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./dist/
 
 workflows:
   # Below is the definition of your workflow.
