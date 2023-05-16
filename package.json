@@ -19,6 +19,8 @@
     "js-yaml": "^4.1.0",
     "klaw-sync": "^6.0.0",
     "mustache": "^4.2.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.3.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
