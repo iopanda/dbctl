@@ -111,7 +111,6 @@ const executeScript = async (contextName, parsedScriptArray, namespace = "defaul
 
     const currentVersion = await Namespace.getVersionByNamespace(client, namespace) || ""
     const filteredScriptArray = parsedScriptArray.filter(it => it.name > currentVersion)
-    console.log(parsedScriptArray)
 
     // execution start
     const before = await getDbInfo(contextName)
@@ -143,6 +142,7 @@ const executeScript = async (contextName, parsedScriptArray, namespace = "defaul
         // execution end
     }catch(err){
         console.error(`Failed. ${err.message}`)
+        console.error(err)
     }finally{
         client.shutdown()
     }
