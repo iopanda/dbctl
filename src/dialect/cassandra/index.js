@@ -109,8 +109,9 @@ const executeScript = async (contextName, parsedScriptArray, namespace = "defaul
     const client = Client(context)
     const eventId = uuid()
 
-    const currentVersion = await Namespace.getVersionByNamespace(client, namespace) || "_"
+    const currentVersion = await Namespace.getVersionByNamespace(client, namespace) || ""
     const filteredScriptArray = parsedScriptArray.filter(it => it.name > currentVersion)
+    console.log(parsedScriptArray)
 
     // execution start
     const before = await getDbInfo(contextName)
