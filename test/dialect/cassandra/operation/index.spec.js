@@ -3,7 +3,7 @@ const assert = require('assert');
 const localConfig = require('../../../../src/config/localConfig')
 const constants = require('../../../../src/common/constants')
 const Client = require('../../../../src/dialect/cassandra/driver/client')
-const {Audit, Event, Meta, Repo, Version} = require('../../../../src/dialect/cassandra/operations')
+const {History, Event, Meta, Repo, Version} = require('../../../../src/dialect/cassandra/operations')
 
 
 
@@ -38,15 +38,15 @@ describe('Test on dialect/cassandra/operations/index.js', () => {
         PREDEFINED.client.shutdown()
     })
     
-    describe('Test on audit.js', () => {
-        it('Audit can be insert and queried', async () => {
+    describe('Test on history.js', () => {
+        it('History can be insert and queried', async () => {
             const obj = {
                 id: 'aid001',
                 before: 'before',
                 after: 'after'
             }
-            await Audit.addAudit(PREDEFINED.client, obj)
-            const rs = await Audit.getAudit(PREDEFINED.client, obj.id)
+            await new History(PREDEFINED.client, obj).save()
+            const rs = await History.find(PREDEFINED.client, obj)
             assert.equal(rs.before, obj.before)
             assert.equal(rs.after, obj.after)
         })
@@ -59,8 +59,8 @@ describe('Test on dialect/cassandra/operations/index.js', () => {
                 type: 'commit',
                 info: 'this is a info'
             }
-            await Event.addEvnet(PREDEFINED.client, obj)
-            const rs = await Event.getEvent(PREDEFINED.client, obj.id)
+            await new Event(PREDEFINED.client, obj).save()
+            const rs = await Event.find(PREDEFINED.client, obj)
             assert.equal(rs.type, obj.type)
             assert.equal(rs.info, obj.info)
         })
@@ -72,14 +72,14 @@ describe('Test on dialect/cassandra/operations/index.js', () => {
                 key: 'm001',
                 value: 'v001',
             }
-            await Meta.addMeta(PREDEFINED.client, obj)
-            const rs1 = await Meta.getMeta(PREDEFINED.client, obj.key)
+            await new Meta(PREDEFINED.client, obj).save()
+            const rs1 = await Meta.find(PREDEFINED.client, obj)
             assert.equal(rs1.value, obj.value)
             
-            obj.value = 'v002'
-            await Meta.updateMeta(PREDEFINED.client, obj)
-            const rs2 = await Meta.getMeta(PREDEFINED.client, obj.key)
-            assert.equal(rs2.value, obj.value)
+            rs1.value = 'v002'
+            await rs1.save(PREDEFINED.client, obj)
+            const rs2 = await Meta.find(PREDEFINED.client, obj)
+            assert.equal(rs2.value, rs1.value)
         })
     })
 
@@ -92,8 +92,8 @@ describe('Test on dialect/cassandra/operations/index.js', () => {
                 commitContent: 'this is commitContent',
                 rollbackContent: 'this is rollbackContent'
             }
-            await Repo.addRepo(PREDEFINED.client, obj)
-            const rs = await Repo.getRepo(PREDEFINED.client, obj.namespace, obj.id)
+            await new Repo(PREDEFINED.client, obj).save()
+            const rs = await Repo.find(PREDEFINED.client, obj)
             assert.equal(rs.eventId, obj.eventId)
             assert.equal(rs.commitContent, obj.commitContent)
             assert.equal(rs.rollbackContent, obj.rollbackContent)
@@ -103,9 +103,9 @@ describe('Test on dialect/cassandra/operations/index.js', () => {
     describe('Test on version.js', () => {
         it('Version can be changed and get', async () => {
             const fn = "123"
-            await Version.updateLastScriptName(PREDEFINED.client, fn)
-            const rs = await Version.getLastScriptName(PREDEFINED.client)
-            assert.equal(rs, fn)
+            await new Version(PREDEFINED.client, {id: 0, version: fn}).save()
+            const rs = await Version.find(PREDEFINED.client, {id: 0})
+            assert.equal(rs.version, fn)
         })
     })
 })

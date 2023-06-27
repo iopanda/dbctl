@@ -4,7 +4,6 @@ const localConfig = require('../src/config/localConfig')
 const cmd = new Command()
 .name('install')
 .description('Install dbctl in your managed database')
-.addOption(new Option('-f --force', 'Force Install'))
 .action(async opts => {
     const contextName = localConfig.getCurrentContextName()
     if(!contextName){
@@ -18,15 +17,7 @@ const cmd = new Command()
         process.exit(3)
     }
     const database = require('../src/dialect')[dialect]
-    const rawScript = require(`../src/dialect/${dialect}/script`)
-
-    if(opts.force){
-        const uninstallScript = await rawScript.getUninstallSqls(contextName)
-        await database.executeSqls(contextName, uninstallScript.sqls)
-    }
-
-    const installScript = await rawScript.getInstallSqls(contextName)
-    await database.executeSqls(contextName, installScript.sqls)
+    await database.install(contextName)
 })
 
 module.exports = cmd

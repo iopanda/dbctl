@@ -9,7 +9,7 @@ const cmdGet = require('./dbctl-get')
 const cmdInstall = require('./dbctl-install')
 const cmdUninstall = require('./dbctl-uninstall')
 
-const program = new Command();
+const program = new Command()
 
 program
     .name('dbctl')
@@ -18,9 +18,9 @@ program
 
 program.addCommand(cmdApply)
 program.addCommand(cmdConfig)
-// program.addCommand(cmdDiff)
+program.addCommand(cmdDiff)
 program.addCommand(cmdExport)
-// program.addCommand(cmdGet)
+program.addCommand(cmdGet)
 program.addCommand(cmdInstall)
 program.addCommand(cmdUninstall)
 

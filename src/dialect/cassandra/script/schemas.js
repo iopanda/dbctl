@@ -113,7 +113,7 @@ const v4 = {
         fields: [
             'keyspace_name', 'table_name', 'additional_write_policy', 'bloom_filter_fp_chance', 'cdc', 
             'comment', 'crc_check_chance', 'dclocal_read_repair_chance', 'default_time_to_live', 'gc_grace_seconds', 
-            'id', 'max_index_interval', 'memtable', 'memtable_flush_period_in_ms', 'min_index_interval', 
+            'id', 'max_index_interval', 'memtable_flush_period_in_ms', 'min_index_interval', 
             'read_repair', 'read_repair_chance', 'speculative_retry',
             'caching', 'compaction', 'compression', 'extensions', 'flags'
         ],

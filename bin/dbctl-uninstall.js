@@ -17,9 +17,7 @@ const cmd = new Command()
         process.exit(3)
     }
     const database = require('../src/dialect')[dialect]
-    const rawScript = require(`../src/dialect/${dialect}/script`)
-    const scripts = await rawScript.getUninstallSqls(contextName)
-    await database.executeSqls(contextName, scripts.sqls)
+    await database.uninstall(contextName)
 })
 
 module.exports = cmd

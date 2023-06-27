@@ -3,7 +3,8 @@ const localConfig = require('../src/config/localConfig')
 const printer = require('../src/common/printer')
 const cmd = new Command().name('config').description('change configuration')
 
-cmd.command('init').action(() => {
+cmd.command('init')
+.action(() => {
     localConfig.createConfigFile()
     localConfig.writeConfigFile({})
 })

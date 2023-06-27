@@ -1,23 +1,45 @@
 const constants = require('../../../common/constants')
 
-const getVersionByNamespace = async (client, namespace) => {
-    const cql = `SELECT schema_version from ${constants.SYSDB_NAME}.namespaces WHERE namespace = '${namespace}'`
-    const rs = await client.execute(cql)
-    return (rs.first() && rs.first().get('schema_version')) || null
+class Namespace {
+    constructor(client, data){
+        this.client = client
+        this.namespace = data.namespace
+        this.version = data.version
+    }
+
+    async save() {
+        const cql = `UPDATE ${constants.SYSDB_NAME}.namespaces SET schema_version = '${this.version}', created_at = currentTimestamp(), updated_at = currentTimestamp() WHERE namespace = '${this.namespace}'`
+        const rs = await client.execute(cql)
+        return rs
+    }
+
+    async update(){
+        const cql = `UPDATE ${constants.SYSDB_NAME}.namespaces SET schema_version = '${this.version}', updated_at = currentTimestamp() WHERE namespace = '${this.namespace}'`
+        const rs = await client.execute(cql)
+        return rs
+    }
 }
 
-const updateVersionByNamespace = async (client, namespace, newVersion) => {
-    const cql = `UPDATE ${constants.SYSDB_NAME}.namespaces SET schema_version = '${newVersion}', updated_at = currentTimestamp() WHERE namespace = '${namespace}'`
+Namespace.create = async (client) => {
+    const cql = `CREATE TABLE ${constants.SYSDB_NAME}.namespaces ( namespace TEXT, schema_version TEXT, created_at TIMESTAMP, updated_at TIMESTAMP, PRIMARY KEY (namespace) )`
     const rs = await client.execute(cql)
+    return rs
 }
 
-const insertVersionByNamespace = async (client, namespace, newVersion) => {
-    const cql = `UPDATE ${constants.SYSDB_NAME}.namespaces SET schema_version = '${newVersion}', created_at = currentTimestamp(), updated_at = currentTimestamp() WHERE namespace = '${namespace}'`
+Namespace.find = async (client, data) => {
+    const cql = `SELECT schema_version from ${constants.SYSDB_NAME}.namespaces WHERE namespace = '${data.namespace}'`
     const rs = await client.execute(cql)
+    return new Namespace(client, {
+        namespace: rs['namespace'],
+        version: rs['schema_version']
+    })
 }
 
-module.exports = {
-    getVersionByNamespace: getVersionByNamespace,
-    updateVersionByNamespace: updateVersionByNamespace,
-    insertVersionByNamespace: insertVersionByNamespace
+Namespace.drop = async (client) => {
+    const cql = `DROP TABLE ${constants.SYSDB_NAME}.namespaces`
+    const rs = await client.execute(cql)
+    return rs
 }
+
+
+module.exports = Namespace
