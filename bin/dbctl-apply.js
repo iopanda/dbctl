@@ -28,16 +28,7 @@ cmd
         process.exit(3)
     }
 
-    
-    // const fp = options.folder.startsWith('/') ? options.folder : path.join(constants.PATH.CWD, options.folder)
-    const fp = path.resolve(constants.PATH.CWD, options.folder)
-    // app.apply(fp, values, scripts)
-
-    const values = loader.getYamlValuesByGivenName(fp, options.value)
-    const scripts = loader.scriptDirProcess(fp, values)
-    
-    const database = require('../src/dialect')
-    database[dialect].executeScript(contextName, scripts, options.namespace)
+    app.apply(options.folder, options.value, options.namespace)
 })
 
 module.exports = cmd

@@ -95,7 +95,7 @@ const convertDictToArray = dict => {
     return result
 }
 
-const scriptDirProcess = (dir, values) => {
+const scriptDirProcess = (dir, values, tag) => {
     const flist = getSqlFilePathSortedList(dir)
     const completedScriptDict = {}
     const uncompletedMessages = []
@@ -107,6 +107,8 @@ const scriptDirProcess = (dir, values) => {
                 name: it.name,
                 message: `Naming of file ${it.name} is not follow standard. Please follow the naming <NAME>.<commit|rollback>.sql `
             })
+        } else if (tag && clips[0] <= tag) {
+
         } else {
             const scriptName = clips[0]
             const scriptMode = clips[1]
@@ -117,6 +119,7 @@ const scriptDirProcess = (dir, values) => {
             completedScriptDict[scriptName][scriptMode] = content
         }
     })
+
     // Check non-completed scripts
     const scriptArray = convertDictToArray(completedScriptDict).sort(ascSort)
     scriptArray.forEach(it => {
@@ -150,5 +153,7 @@ module.exports = {
     convertScriptToExecutableSqls: convertScriptToExecutableSqls,
     scriptDirProcess: scriptDirProcess,
     getYamlFilePathSortedList: getYamlFilePathSortedList,
-    getYamlValuesByGivenName: getYamlValuesByGivenName
+    getYamlValuesByGivenName: getYamlValuesByGivenName,
+    convertDictToArray:convertDictToArray,
+    ascSort: ascSort
 }

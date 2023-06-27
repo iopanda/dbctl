@@ -3,7 +3,12 @@ const localConfig = require('../src/config/localConfig')
 
 
 module.exports = {
-    apply: (path) => {},
+    apply: async (scriptFolder, valueName, namespace) => {
+        const context = localConfig.getCurrentContextName()
+        const config = localConfig.getConfigObject()[context]
+        
+        await dialect[config.dialect].apply(config, scriptFolder, namespace, valueName)
+    },
     config: {
         init: () => {},
         set: (name, value, type) => {},

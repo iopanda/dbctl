@@ -9,7 +9,7 @@ class Namespace {
 
     async save() {
         const cql = `UPDATE ${constants.SYSDB_NAME}.namespaces SET schema_version = '${this.version}', created_at = currentTimestamp(), updated_at = currentTimestamp() WHERE namespace = '${this.namespace}'`
-        const rs = await client.execute(cql)
+        const rs = await this.client.execute(cql)
         return rs
     }
 
@@ -29,6 +29,16 @@ Namespace.create = async (client) => {
 Namespace.find = async (client, data) => {
     const cql = `SELECT schema_version from ${constants.SYSDB_NAME}.namespaces WHERE namespace = '${data.namespace}'`
     const rs = await client.execute(cql)
+    return new Namespace(client, {
+        namespace: rs['namespace'],
+        version: rs['schema_version']
+    })
+}
+
+Namespace.findOne = async (client, data) => {
+    const cql = `SELECT schema_version from ${constants.SYSDB_NAME}.namespaces WHERE namespace = '${data.namespace}'`
+    const rs = (await client.execute(cql)).first()
+    if(!rs) return null
     return new Namespace(client, {
         namespace: rs['namespace'],
         version: rs['schema_version']
