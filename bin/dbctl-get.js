@@ -6,7 +6,7 @@ cmd
     .command('tables')
     .option('-c --catalog <catalog>')
     .action(options => { 
-        app.get.tables(options.database)
+        app.get.tables(options.catalog)
     })
 
 cmd
@@ -14,7 +14,7 @@ cmd
     .option('-c --catalog <catalog>')
     .option('-t --table <table>')
     .action(options => { 
-        app.get.table(options.database, options.table) 
+        app.get.table(options.catalog, options.table) 
     })
 
 cmd

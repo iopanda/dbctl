@@ -32,7 +32,7 @@ const getDbInfo = async contextName => {
         // 3. Convert to a better structure for rebuild
         const converted = {
             local: local.map(schemas[version].local.handler)[0],
-            catalogs: catalogs.map(schemas[version].catalog.handler).filter(it => EXCLUDED_KS.indexOf(it.name) == -1),
+            catalogs: catalogs.map(schemas[version].catalogs.handler).filter(it => EXCLUDED_KS.indexOf(it.name) == -1),
             tables: tables.map(schemas[version].tables.handler).filter(it => EXCLUDED_KS.indexOf(it.name) == -1),
             columns: columns.map(schemas[version].columns.handler).filter(it => EXCLUDED_KS.indexOf(it.name) == -1)
         }
@@ -87,7 +87,7 @@ const getDbInfoWithConfig = async config => {
         // 3. Convert to a better structure for rebuild
         const converted = {
             local: local.map(schemas[version].local.handler)[0],
-            catalogs: catalogs.map(schemas[version].catalog.handler).filter(it => EXCLUDED_KS.indexOf(it.name) == -1),
+            catalogs: catalogs.map(schemas[version].catalogs.handler).filter(it => EXCLUDED_KS.indexOf(it.name) == -1),
             tables: tables.map(schemas[version].tables.handler).filter(it => EXCLUDED_KS.indexOf(it.name) == -1),
             columns: columns.map(schemas[version].columns.handler).filter(it => EXCLUDED_KS.indexOf(it.name) == -1)
         }

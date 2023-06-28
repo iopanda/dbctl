@@ -1,5 +1,6 @@
 const { Command } = require('commander')
 const localConfig = require('../src/config/localConfig')
+const app = require('../src/app')
 
 const cmd = new Command()
 .name('uninstall')
@@ -16,8 +17,8 @@ const cmd = new Command()
         console.error(`The dialect of your database is missing in context "${contextName}", please use "dbctl config set context.${contextName}.dialect <cassandra|mysql> to setup."`)
         process.exit(3)
     }
-    const database = require('../src/dialect')[dialect]
-    await database.uninstall(contextName)
+
+    await app.uninstall()
 })
 
 module.exports = cmd

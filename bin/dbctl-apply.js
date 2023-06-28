@@ -1,7 +1,4 @@
 const { Command, Option } = require('commander')
-const path = require('path')
-const constants = require('../src/common/constants')
-const loader = require('../src/script/loader')
 const localConfig = require('../src/config/localConfig')
 const app = require('../src/app')
 
